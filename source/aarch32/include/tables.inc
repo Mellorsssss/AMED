@@ -14,7 +14,7 @@
 |*                Automatically generated file, do not edit!                  *|
 |*                                                                            *|
 \*===----------------------------------------------------------------------===*/
-
+#include <stddef.h>
 static const amed_db_tv COND_items[17] = 
 {{.cond=MK_COND(EQ), .encoding=0, .is_representable=1},
 {.cond=MK_COND(NE), .encoding=1, .is_representable=1},

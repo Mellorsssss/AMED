@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <stddef.h>
 #include "amed.h"
 
 typedef int (*printer_method)(char*, amed_context*, amed_insn*, amed_formatter*);

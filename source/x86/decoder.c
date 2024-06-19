@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 #include "amed.h"
 #include "amed/x86.h"
 

@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <stddef.h>
 #include "amed.h"
 
 typedef bool (*decoder_method)(amed_context*, amed_insn*);

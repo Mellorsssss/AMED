@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 
 project(AMED)
+add_compile_options("-w")
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+message("current is ${CMAKE_CURRENT_SOURCE_DIR}")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # check if a given option is enabled.
 function(option_enabled)

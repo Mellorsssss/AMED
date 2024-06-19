@@ -34,7 +34,7 @@ typedef struct _x86_printer
 static inline bool print_reg_value(x86_printer* pprinter, uint16_t value)
 {
 	const char* str = amed_x86_register_to_string(value);
-	pprinter->pc += sprintf_s(pprinter->pc, AMED_X86_REGISTER_MAX_TEXT_LENGTH, "%s", str);
+	pprinter->pc += snprintf(pprinter->pc, AMED_X86_REGISTER_MAX_TEXT_LENGTH, "%s", str);
 	return true;
 }
 
@@ -55,14 +55,14 @@ static bool print_reg_swizzle(x86_printer* pprinter, amed_argument* pargument)
 static bool print_arg_reg(x86_printer* pprinter, amed_argument* pargument)
 {
 	const char* str = amed_x86_register_to_string(pargument->reg.value);
-	pprinter->pc += sprintf_s(pprinter->pc, AMED_X86_REGISTER_MAX_TEXT_LENGTH, "%s", str);
+	pprinter->pc += snprintf(pprinter->pc, AMED_X86_REGISTER_MAX_TEXT_LENGTH, "%s", str);
 	if (pargument->zeroing)
 	{
-		pprinter->pc += sprintf_s(pprinter->pc, 4, "{%s}", "Z");
+		pprinter->pc += snprintf(pprinter->pc, 4, "{%s}", "Z");
 	}
 	else if (pargument->merging)
 	{
-		pprinter->pc += sprintf_s(pprinter->pc, 4, "{%s}", "M");
+		pprinter->pc += snprintf(pprinter->pc, 4, "{%s}", "M");
 	}
 	else if (pargument->printer.print_index)
 	{
@@ -99,7 +99,7 @@ static bool print_size(x86_printer* pprinter, int size)
 		str = "ZWORD";
 		break;
 	}
-	pprinter->pc += sprintf_s(pprinter->pc, 10, "%s", str);
+	pprinter->pc += snprintf(pprinter->pc, 10, "%s", str);
 	return true;
 }
 
@@ -125,23 +125,23 @@ static bool print_imm_value(x86_printer* pprinter, int64_t value, amed_datatype 
 	case AMED_DATATYPE_S8:
 	case AMED_DATATYPE_U8:
 	case AMED_DATATYPE_I8:
-		pprinter->pc += sprintf_s(pprinter->pc, 4, "%u", (uint8_t)value);
+		pprinter->pc += snprintf(pprinter->pc, 4, "%u", (uint8_t)value);
 		break;
 	case AMED_DATATYPE_S16:
 	case AMED_DATATYPE_U16:
 	case AMED_DATATYPE_I16:
-		pprinter->pc += sprintf_s(pprinter->pc, 8, "0x%04x", (int16_t)value);
+		pprinter->pc += snprintf(pprinter->pc, 8, "0x%04x", (int16_t)value);
 		break;
 	case AMED_DATATYPE_S32:
 	case AMED_DATATYPE_U32:
 	case AMED_DATATYPE_I32:
-		pprinter->pc += sprintf_s(pprinter->pc, 12, "0x%08x", (int32_t)value);
+		pprinter->pc += snprintf(pprinter->pc, 12, "0x%08x", (int32_t)value);
 		break;
 	case AMED_DATATYPE_S64:
 	case AMED_DATATYPE_U64:
 	case AMED_DATATYPE_I64:
 	default:
-		pprinter->pc += sprintf_s(pprinter->pc, 20, "0x%016llx", value);
+		pprinter->pc += snprintf(pprinter->pc, 20, "0x%016llx", value);
 		break;
 	}
 	return true;
@@ -149,7 +149,7 @@ static bool print_imm_value(x86_printer* pprinter, int64_t value, amed_datatype 
 
 static inline bool print_broadcasting(x86_printer* pprinter, amed_argument* pargument)
 {
-	pprinter->pc += sprintf_s(pprinter->pc, 10, "{%dto%d}",
+	pprinter->pc += snprintf(pprinter->pc, 10, "{%dto%d}",
 		pargument->mem.broadcasting.from,
 		pargument->mem.broadcasting.to
 	);
@@ -187,7 +187,7 @@ static bool print_arg_mem(x86_printer* pprinter, amed_argument* pargument)
 		if (pargument->printer.print_shifter)
 		{
 			LAZYPRINT(pprinter->pc, '*');
-			pprinter->pc += sprintf_s(pprinter->pc, 2, "%d", pargument->shifter.amount);
+			pprinter->pc += snprintf(pprinter->pc, 2, "%d", pargument->shifter.amount);
 		}
 	}
 	if (pargument->mem.immoff.datatype)
@@ -202,7 +202,7 @@ static bool print_arg_mem(x86_printer* pprinter, amed_argument* pargument)
 
 	if (pargument->mem.vdatatype)
 	{
-		pprinter->pc += sprintf_s(pprinter->pc, 10, "{%s}", amed_datatype_to_string(pargument->datatype));
+		pprinter->pc += snprintf(pprinter->pc, 10, "{%s}", amed_datatype_to_string(pargument->datatype));
 	}
 	else if (pargument->printer.print_broadcasting && pargument->mem.broadcasting.from)
 	{
@@ -218,7 +218,7 @@ static inline bool print_arg_imm(x86_printer* pprinter, amed_argument* pargument
 
 static inline bool print_arg_ptr(x86_printer* pprinter, amed_argument* pargument)
 {
-	pprinter->pc += sprintf_s(pprinter->pc, 16, "%04x:%04x",
+	pprinter->pc += snprintf(pprinter->pc, 16, "%04x:%04x",
 		pargument->x86.ptr.segment, pargument->x86.ptr.offset.value.s32);
 	return true;
 }
@@ -229,21 +229,21 @@ static bool print_rounding(x86_printer* pprinter, amed_rounding_type value)
 	if (value > AMED_ROUNDING_TYPE_ZERO) return false;
 	const char* str = table[value];
 	LAZYPRINT(pprinter->pc, '{');
-	pprinter->pc += sprintf_s(pprinter->pc, 4, "%s", str);
-	if (pprinter->insn->is_suppressing_all_exceptions)	pprinter->pc += sprintf_s(pprinter->pc, 8, "-%s", "SAE");
+	pprinter->pc += snprintf(pprinter->pc, 4, "%s", str);
+	if (pprinter->insn->is_suppressing_all_exceptions)	pprinter->pc += snprintf(pprinter->pc, 8, "-%s", "SAE");
 	LAZYPRINT(pprinter->pc, '}');
 	return true;
 }
 
 static inline bool print_sae(x86_printer* pprinter, bool value)
 {
-	if (value) pprinter->pc += sprintf_s(pprinter->pc, 6, "{%s}", "SAE");
+	if (value) pprinter->pc += snprintf(pprinter->pc, 6, "{%s}", "SAE");
 	return true;
 }
 
 static inline bool print_evh(x86_printer* pprinter, bool value)
 {
-	if (value) pprinter->pc += sprintf_s(pprinter->pc, 6, "{%s}", "EH");
+	if (value) pprinter->pc += snprintf(pprinter->pc, 6, "{%s}", "EH");
 	return true;
 }
 
@@ -260,8 +260,8 @@ bool print_prefixes(x86_printer* pprinter)
 		"BND",
 	};
 	const char* str = prefixes[pprinter->insn->x86.prefix_functionality];
-	if (str)                        pprinter->pc += sprintf_s(pprinter->pc, 12, "%s ", str);
-	if (pprinter->insn->is_atomic)	pprinter->pc += sprintf_s(pprinter->pc, 8, "%s", "LOCK ");
+	if (str)                        pprinter->pc += snprintf(pprinter->pc, 12, "%s ", str);
+	if (pprinter->insn->is_atomic)	pprinter->pc += snprintf(pprinter->pc, 8, "%s", "LOCK ");
 	return true;
 }
 
@@ -271,7 +271,7 @@ static bool print_arg_enum(x86_printer* pprinter, amed_argument* pargument,
 	if (pargument->is_representable)
 	{
 		const char* txt = func(pargument->token);
-		pprinter->pc += sprintf_s(pprinter->pc, max_size, "%s", txt);
+		pprinter->pc += snprintf(pprinter->pc, max_size, "%s", txt);
 	}
 	else
 	{
@@ -295,7 +295,7 @@ int amed_x86_print_insn(char* buffer, amed_context* pcontext, amed_insn* pinsn, 
 	};
 	print_prefixes(&printer);
 	const char* str = amed_x86_mnemonic_to_string(pinsn->mnemonic);
-	printer.pc += sprintf_s(printer.pc, AMED_X86_MNEMONIC_MAX_TEXT_LENGTH, "%s", str);
+	printer.pc += snprintf(printer.pc, AMED_X86_MNEMONIC_MAX_TEXT_LENGTH, "%s", str);
 
 	int count = pinsn->argument_count;
 	if (!count) goto end;

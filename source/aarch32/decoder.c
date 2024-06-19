@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <stddef.h>
 #include "sed.h"
 #include "include/lookup-a32.inc"
 #include "include/lookup-t32.inc"

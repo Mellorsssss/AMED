@@ -36,7 +36,7 @@ typedef struct _aarch32_printer
 static bool print_index(aarch32_printer* pprinter, uint8_t index)
 {
 	LAZYPRINT(pprinter->pc, '[');
-	pprinter->pc += sprintf_s(pprinter->pc, 4, "%d", index);
+	pprinter->pc += snprintf(pprinter->pc, 4, "%d", index);
 	LAZYPRINT(pprinter->pc, ']');
 	return true;
 }
@@ -46,15 +46,15 @@ static bool print_shifter(aarch32_printer* pprinter, amed_argument_shifter* parg
 	LAZYPRINT(pprinter->pc, ',');
 	LAZYPRINT(pprinter->pc, ' ');
 	const char* sshift = amed_shift_to_string(pargument->type);
-	pprinter->pc += sprintf_s(pprinter->pc, AMED_SHIFT_MAX_TEXT_LENGTH, "%s", sshift);
+	pprinter->pc += snprintf(pprinter->pc, AMED_SHIFT_MAX_TEXT_LENGTH, "%s", sshift);
 	if (pargument->has_amount)
 	{
-		pprinter->pc += sprintf_s(pprinter->pc, 10, " #%d", pargument->amount);
+		pprinter->pc += snprintf(pprinter->pc, 10, " #%d", pargument->amount);
 	}
 	else if (pargument->has_register)
 	{
 		const char* txt = amed_aarch32_register_to_string(pargument->reg);
-		pprinter->pc += sprintf_s(pprinter->pc, AMED_AARCH32_REGISTER_MAX_TEXT_LENGTH, " %s", txt);
+		pprinter->pc += snprintf(pprinter->pc, AMED_AARCH32_REGISTER_MAX_TEXT_LENGTH, " %s", txt);
 	}
 	return true;
 }
@@ -62,14 +62,14 @@ static bool print_shifter(aarch32_printer* pprinter, amed_argument_shifter* parg
 static bool print_datatype(aarch32_printer* pprinter, amed_argument* pargument)
 {
 	const char* txt = amed_datatype_to_string(pargument->datatype);
-	pprinter->pc += sprintf_s(pprinter->pc, 2 + AMED_DATATYPE_MAX_TEXT_LENGTH, ".%s", txt);
+	pprinter->pc += snprintf(pprinter->pc, 2 + AMED_DATATYPE_MAX_TEXT_LENGTH, ".%s", txt);
 	return true;
 }
 
 static bool print_arg_reg(aarch32_printer* pprinter, amed_argument* pargument)
 {
 	const char* txt = amed_aarch32_register_to_string(pargument->reg.value);
-	pprinter->pc += sprintf_s(pprinter->pc, AMED_AARCH32_REGISTER_MAX_TEXT_LENGTH, "%s", txt);
+	pprinter->pc += snprintf(pprinter->pc, AMED_AARCH32_REGISTER_MAX_TEXT_LENGTH, "%s", txt);
 
 	if (pargument->has_index)
 	{
@@ -95,7 +95,7 @@ static bool print_imm(aarch32_printer* pprinter, amed_immediate_value value,
 	case AMED_DATATYPE_F16:
 	case AMED_DATATYPE_F32:
 	case AMED_DATATYPE_F64:
-		pprinter->pc += sprintf_s(pprinter->pc, 18 + 1, "%f", value.f64);
+		pprinter->pc += snprintf(pprinter->pc, 18 + 1, "%f", value.f64);
 		return true;
 	case AMED_DATATYPE_S8:
 	case AMED_DATATYPE_S16:
@@ -113,23 +113,23 @@ static bool print_imm(aarch32_printer* pprinter, amed_immediate_value value,
 	case AMED_DATATYPE_S8:
 	case AMED_DATATYPE_U8:
 	case AMED_DATATYPE_I8:
-		pprinter->pc += sprintf_s(pprinter->pc, 8, "%u", (uint8_t)imm);
+		pprinter->pc += snprintf(pprinter->pc, 8, "%u", (uint8_t)imm);
 		break;
 	case AMED_DATATYPE_S16:
 	case AMED_DATATYPE_U16:
 	case AMED_DATATYPE_I16:
-		pprinter->pc += sprintf_s(pprinter->pc, 8, "%u", (uint16_t)imm);
+		pprinter->pc += snprintf(pprinter->pc, 8, "%u", (uint16_t)imm);
 		break;
 	case AMED_DATATYPE_S32:
 	case AMED_DATATYPE_U32:
 	case AMED_DATATYPE_I32:
-		pprinter->pc += sprintf_s(pprinter->pc, 16, "0x%08x", (uint32_t)imm);
+		pprinter->pc += snprintf(pprinter->pc, 16, "0x%08x", (uint32_t)imm);
 		break;
 	case AMED_DATATYPE_S64:
 	case AMED_DATATYPE_U64:
 	case AMED_DATATYPE_I64:
 	default:
-		pprinter->pc += sprintf_s(pprinter->pc, 32, "0x%016llx", imm);
+		pprinter->pc += snprintf(pprinter->pc, 32, "0x%016llx", imm);
 		break;
 	}
 	return true;
@@ -146,7 +146,7 @@ static bool print_arg_imm(aarch32_printer* pprinter, amed_argument* pargument)
 static bool print_mem_reg(aarch32_printer* pprinter, uint16_t reg)
 {
 	const char* sreg = amed_aarch32_register_to_string(reg);
-	pprinter->pc += sprintf_s(pprinter->pc, AMED_AARCH32_REGISTER_MAX_TEXT_LENGTH, "%s", sreg);
+	pprinter->pc += snprintf(pprinter->pc, AMED_AARCH32_REGISTER_MAX_TEXT_LENGTH, "%s", sreg);
 	return true;
 }
 
@@ -209,7 +209,7 @@ static bool print_arg_list(aarch32_printer* pprinter, amed_argument* pargument)
 	for (int i = 0; i < count; i++)
 	{
 		const char* str = amed_aarch32_register_to_string(pargument->list.registers[i]);
-		pprinter->pc += sprintf_s(pprinter->pc, AMED_AARCH32_REGISTER_MAX_TEXT_LENGTH, "%s", str);
+		pprinter->pc += snprintf(pprinter->pc, AMED_AARCH32_REGISTER_MAX_TEXT_LENGTH, "%s", str);
 		if (i != count - 1)
 		{
 			LAZYPRINT(pprinter->pc, ',');
@@ -227,7 +227,7 @@ static bool print_arg_enum(aarch32_printer* pprinter, amed_argument* pargument,
 	if (pargument->is_representable)
 	{
 		const char* txt = func(pargument->token);
-		pprinter->pc += sprintf_s(pprinter->pc, max_size, "%s", txt);
+		pprinter->pc += snprintf(pprinter->pc, max_size, "%s", txt);
 		return true;
 	}
 	else
@@ -255,7 +255,7 @@ static bool print_arg_aif(aarch32_printer* pprinter, amed_argument* pargument)
 	}
 	else
 	{
-		pprinter->pc += sprintf_s(pprinter->pc, 4, "#%d", 0);
+		pprinter->pc += snprintf(pprinter->pc, 4, "#%d", 0);
 	}
 	return true;
 }
@@ -289,7 +289,7 @@ bool print_datatypes(aarch32_printer* pprinter)
 		if (datatypes[i])
 		{
 			const char* str = amed_datatype_to_string(datatypes[i]);
-			pprinter->pc += sprintf_s(pprinter->pc, AMED_DATATYPE_MAX_TEXT_LENGTH + 4, ".%s", str);
+			pprinter->pc += snprintf(pprinter->pc, AMED_DATATYPE_MAX_TEXT_LENGTH + 4, ".%s", str);
 		}
 		else
 		{
@@ -310,25 +310,25 @@ int amed_aarch32_print_insn(char* buffer, amed_context* pcontext, amed_insn* pin
 	};
 
 	const char* txt = amed_aarch32_mnemonic_to_string(pinsn->mnemonic);
-	printer.pc += sprintf_s(printer.pc, AMED_AARCH32_MNEMONIC_MAX_TEXT_LENGTH, "%s", txt);
+	printer.pc += snprintf(printer.pc, AMED_AARCH32_MNEMONIC_MAX_TEXT_LENGTH, "%s", txt);
 	if (AMED_AARCH32_MNEMONIC_IT == pinsn->mnemonic)
 	{
 		/* print it op */
 		const char* txt = amed_aarch32_it_op_to_string(pinsn->aarch32.it_op);
-		printer.pc += sprintf_s(printer.pc, AMED_AARCH32_IT_OP_MAX_TEXT_LENGTH, "%s", txt);
+		printer.pc += snprintf(printer.pc, AMED_AARCH32_IT_OP_MAX_TEXT_LENGTH, "%s", txt);
 	}
 	else if (pinsn->aarch32.condition && AMED_ARM_CONDITION_AL != pinsn->aarch32.condition)
 	{
 		/* print condition */
 		const char* txt = amed_arm_condition_to_string(pinsn->aarch32.condition);
-		printer.pc += sprintf_s(printer.pc, AMED_ARM_CONDITION_MAX_TEXT_LENGTH, "%s", txt);
+		printer.pc += snprintf(printer.pc, AMED_ARM_CONDITION_MAX_TEXT_LENGTH, "%s", txt);
 	}
 	if (AMED_MACHINE_MODE_THUMB == pcontext->machine_mode)
 	{
 		/* print qualifier */
 		if (4 == pinsn->length && pinsn->aarch32.show_qualifier)
 		{
-			printer.pc += sprintf_s(printer.pc, 4, ".%s", "W");
+			printer.pc += snprintf(printer.pc, 4, ".%s", "W");
 		}
 	}
 

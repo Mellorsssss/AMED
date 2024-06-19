@@ -38,6 +38,7 @@ typedef enum _amed_architecture
 }amed_architecture;
 
 #include "amed/shared/enums.inc"
+#include <stdint.h>
 
 typedef struct _amed_iflag
 {
@@ -487,9 +488,13 @@ typedef struct _amed_immediate_value
 		*/
 
 		/* as byte. */
-		__int8          i8;
+		/*__int8          i8;
 		unsigned __int8 u8;
-		signed   __int8 s8;
+		signed   __int8 s8;*/
+		char          i8;
+		unsigned char u8;
+		signed   char s8;
+
 
 		/* as short. */
 		short int i16;

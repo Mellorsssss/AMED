@@ -14,7 +14,7 @@
 |*                Automatically generated file, do not edit!                  *|
 |*                                                                            *|
 \*===----------------------------------------------------------------------===*/
-
+#include <stddef.h>
 const void* amed_aarch64_arguments_array[] = 
 {
   /* 0    */ NULL, //  SETFFR  
